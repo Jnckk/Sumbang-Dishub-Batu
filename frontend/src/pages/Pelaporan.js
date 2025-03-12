@@ -8,7 +8,6 @@ import {
   Spinner,
   Modal,
 } from "react-bootstrap";
-import MainNavbar from "../components/mainNavbar";
 
 const Pelaporan = () => {
   const [formData, setFormData] = useState({
@@ -145,7 +144,6 @@ const Pelaporan = () => {
 
   return (
     <>
-      <MainNavbar />
       <Container className="mt-5">
         <div className="text-center mb-4">
           <h2>Form Pelaporan SUMBANG</h2>

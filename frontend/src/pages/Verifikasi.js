@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Container, Table, Card, Form, Spinner } from "react-bootstrap";
-import MainNavbar from "../components/mainNavbar";
 import styles from "../css/pages/Verifikasi.module.css";
 
 const Verifikasi = () => {
@@ -36,7 +35,6 @@ const Verifikasi = () => {
 
   return (
     <>
-      <MainNavbar />
       <Container className="mt-5">
         <div className="text-center mb-4">
           <h2>Status Pelaporan SUMBANG</h2>

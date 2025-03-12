@@ -9,7 +9,8 @@ router.get("/users-dashboard", authMiddleware, async (req, res) => {
   try {
     const { data, error } = await supabase
       .from("requests")
-      .select("id, nama, no_hp, lokasi");
+      .select("id, nama, no_hp, lokasi, date")
+      .order("date", { ascending: false });
 
     if (error) throw error;
 

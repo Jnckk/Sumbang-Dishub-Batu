@@ -9,7 +9,6 @@ import {
   Spinner,
 } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import DetailNavbar from "../components/detailNavbar";
 import styles from "../css/pages/Detail.module.css";
 
 const Detail = () => {
@@ -110,7 +109,6 @@ const Detail = () => {
 
   return (
     <>
-      <DetailNavbar />
       <Container className="mt-5">
         <h2 className="mb-4">Detail Pelaporan</h2>
         <Row>

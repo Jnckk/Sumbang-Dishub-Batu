@@ -1,12 +1,10 @@
 import React from "react";
 import logo from "../images/Logo-dishub.webp";
-import MainNavbar from "../components/mainNavbar";
 
 const LandingPage = () => {
 
   return (
     <div>
-      <MainNavbar />
       <div
         className="d-flex flex-column justify-content-start align-items-center"
         style={{ minHeight: "80vh", paddingTop: "5vh" }}

@@ -8,7 +8,6 @@ import {
   Form,
   Card,
 } from "react-bootstrap";
-import UsersNavbar from "../components/usersNavbar";
 
 const ManageUser = () => {
   const [users, setUsers] = useState([]);
@@ -185,7 +184,6 @@ const ManageUser = () => {
 
   return (
     <>
-      <UsersNavbar />
       <Container className="mt-5">
         <div className="d-flex justify-content-between mb-3">
           <h2>Manage Users</h2>
@@ -254,27 +252,30 @@ const ManageUser = () => {
                 users.map((user) => (
                   <Card key={user.id} className="mb-3 shadow-sm">
                     <Card.Body>
-                      <Card.Title className="fw-bold">
-                        {user.username}
-                      </Card.Title>
-                      <Card.Text>
-                        <Table borderless size="sm" className="m-0">
-                          <tbody>
-                            <tr>
-                              <td className="fw-bold">ID</td>
-                              <td>:</td>
-                              <td>{user.id}</td>
-                            </tr>
-                            <tr>
-                              <td className="fw-bold">Role</td>
-                              <td>:</td>
-                              <td>
-                                {user.role === 1 ? "SuperAdmin" : "Admin"}
-                              </td>
-                            </tr>
-                          </tbody>
-                        </Table>
-                      </Card.Text>
+                      <Card.Body>
+                        <Card.Title className="fw-bold">
+                          {user.username}
+                        </Card.Title>
+                        <div>
+                          <Table borderless size="sm" className="m-0">
+                            <tbody>
+                              <tr>
+                                <td className="fw-bold">ID</td>
+                                <td>:</td>
+                                <td>{user.id}</td>
+                              </tr>
+                              <tr>
+                                <td className="fw-bold">Role</td>
+                                <td>:</td>
+                                <td>
+                                  {user.role === 1 ? "SuperAdmin" : "Admin"}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </Table>
+                        </div>
+                      </Card.Body>
+
                       <div className="d-flex">
                         <Button
                           variant="warning"

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Form, Button, Container, Row, Col, Spinner } from "react-bootstrap";
-import MainNavbar from "../components/mainNavbar";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -46,7 +45,6 @@ const Login = () => {
 
   return (
     <>
-      <MainNavbar />
       <Container className="mt-5">
         <Row className="justify-content-center">
           <Col md={4}>

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button, Container, Card, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import AdminNavbar from "../components/adminNavbar";
-import LogoutNavbar from "../components/logoutNavbar";
 import styles from "../css/pages/Dashboard.module.css";
 
 const Dashboard = () => {
@@ -77,7 +75,6 @@ const Dashboard = () => {
 
   return (
     <>
-      {role === 1 ? <AdminNavbar /> : <LogoutNavbar />}
       <Container className="mt-5">
         <h2 className="text-center mb-4">Dashboard</h2>
 
