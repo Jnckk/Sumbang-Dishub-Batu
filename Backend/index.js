@@ -18,7 +18,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: process.env.REACT_APP_CLIENT_URL, // ✔️ Gunakan domain frontend yang diizinkan
+    origin: process.env.REACT_APP_CLIENT_URL,
     credentials: true,
   })
 );
