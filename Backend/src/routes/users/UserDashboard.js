@@ -1,6 +1,7 @@
 const express = require("express");
 const supabase = require("../../utils/supabase");
 const authMiddleware = require("../../middlewares/authMiddleware");
+const { getSignedUrl } = require("../../middlewares/validateDetail");
 
 const router = express.Router();
 
@@ -33,13 +34,7 @@ router.get("/detail/:id", authMiddleware, async (req, res) => {
     const { data, error } = await supabase
       .from("requests")
       .select(
-        `
-          id, nama, alamat, no_whatsapp, no_hp, lokasi, detail_permintaan, date, 
-          permintaan (name),
-          status (name),
-          surat,
-          foto
-        `
+        "id, nama, alamat, no_whatsapp, no_hp, lokasi, detail_permintaan, date, permintaan (name), status (name), surat, foto"
       )
       .eq("id", id)
       .single();
@@ -51,6 +46,13 @@ router.get("/detail/:id", authMiddleware, async (req, res) => {
       });
     }
 
+    const suratUrl = data.surat
+      ? await getSignedUrl("pdf", `${data.id}.pdf`)
+      : null;
+    const fotoUrl = data.foto
+      ? await getSignedUrl("images", `${data.id}.webp`)
+      : null;
+
     const formattedData = {
       id: data.id,
       nama: data.nama,
@@ -61,8 +63,8 @@ router.get("/detail/:id", authMiddleware, async (req, res) => {
       date: data.date,
       permintaan: data.permintaan?.name || "Unknown",
       detail_permintaan: data.detail_permintaan,
-      surat: data.surat,
-      foto: data.foto,
+      surat: suratUrl,
+      foto: fotoUrl,
       status: data.status?.name || "Unknown",
     };
 
