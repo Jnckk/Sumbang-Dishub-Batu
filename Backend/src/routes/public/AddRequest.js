@@ -1,54 +1,19 @@
 const express = require("express");
-const supabase = require("../../utils/supabase");
 const { v4: uuidv4 } = require("uuid");
-const multer = require("multer");
-const path = require("path");
 const {
   validateRequest,
   validateFileUpload,
+  uploadMiddleware,
+  uploadFile,
 } = require("../../middlewares/validateRequest");
+const supabase = require("../../utils/supabase");
 
 const router = express.Router();
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
-
-const uploadFile = async (file, uuid, bucket) => {
-  try {
-    if (!file) return null;
-
-    const extension = path.extname(file.originalname);
-    const filePath = `${uuid}${extension}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from(bucket)
-      .upload(filePath, file.buffer, { contentType: file.mimetype });
-
-    if (uploadError) throw uploadError;
-
-    const { data, error: urlError } = await supabase.storage
-      .from(bucket)
-      .createSignedUrl(filePath, 60 * 60 * 24);
-
-    if (urlError) throw urlError;
-
-    return data.signedUrl;
-  } catch (error) {
-    console.error("Gagal upload file:", error.message);
-    return null;
-  }
-};
-
 router.post(
   "/add-request",
-  upload.fields([{ name: "foto" }, { name: "surat" }]),
+  uploadMiddleware,
   validateFileUpload,
-  (req, res, next) => {
-    Object.keys(req.body).forEach((key) => {
-      req.body[key] = req.body[key].trim();
-    });
-    next();
-  },
   validateRequest,
   async (req, res) => {
     try {
