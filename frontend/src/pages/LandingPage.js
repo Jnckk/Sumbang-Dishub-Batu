@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import logo from "../images/Logo-dishub.png";
+import React from "react";
+import logo from "../images/Logo-dishub.webp";
 import MainNavbar from "../components/mainNavbar";
 
 const LandingPage = () => {
