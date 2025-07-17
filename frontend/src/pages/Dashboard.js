@@ -1,43 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { Table, Button, Container, Card, Spinner } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Container } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import styles from "../css/pages/Dashboard.module.css";
+import Table from "../components/common/Table";
+import Button from "../components/common/Button";
+import Spinner from "../components/common/Spinner";
+import styles from "../styles/pages/Dashboard.module.css";
 
 const Dashboard = () => {
-  const [role, setRole] = useState(null);
   const [dataUsers, setDataUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchRole = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/users/role`,
-          {
-            method: "GET",
-            credentials: "include",
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          console.error("Gagal mendapatkan role:", response.status);
-          return;
-        }
-
-        const data = await response.json();
-
-        if (data.success) {
-          setRole(data.role);
-        }
-      } catch (err) {
-        console.error("Error saat fetch role:", err);
-      }
-    };
-
     const fetchUsersDashboard = async () => {
       try {
         const response = await fetch(
@@ -69,100 +43,93 @@ const Dashboard = () => {
       }
     };
 
-    fetchRole();
     fetchUsersDashboard();
   }, [navigate]);
 
+  const tableColumns = [
+    {
+      key: "number",
+      header: "No",
+      width: "8%",
+      align: "center",
+      className: styles.thId,
+      cellClassName: styles.tdId,
+      render: (item, index) => index + 1,
+    },
+    {
+      key: "nama",
+      header: "Nama",
+      width: "25%",
+      align: "left",
+      className: styles.thNama,
+      cellClassName: styles.tdNama,
+    },
+    {
+      key: "no_hp",
+      header: "No HP",
+      width: "20%",
+      align: "left",
+      className: styles.thNoHp,
+      cellClassName: styles.tdNoHp,
+    },
+    {
+      key: "lokasi",
+      header: "Lokasi",
+      width: "32%",
+      align: "left",
+      className: styles.thLokasi,
+      cellClassName: styles.tdLokasi,
+    },
+    {
+      key: "detail",
+      header: "Detail",
+      width: "15%",
+      align: "center",
+      className: styles.thDetail,
+      cellClassName: styles.tdDetail,
+      render: (item) => (
+        <div className={styles.detailButtonContainer}>
+          <Link to={`/detail/${item.id}`} style={{ textDecoration: "none" }}>
+            <Button variant="primary" size="small" icon="👁️">
+              Detail
+            </Button>
+          </Link>
+        </div>
+      ),
+    },
+  ];
+
   return (
-    <>
-      <Container className="mt-5">
-        <h2 className="text-center mb-4">Dashboard</h2>
+    <div className={styles.dashboardContainer}>
+      <Container fluid className={styles.container}>
+        <div className={styles.headerSection}>
+          <h1 className={styles.pageTitle}>Dashboard SUMBANG</h1>
+          <p className={styles.pageDescription}>
+            Kelola dan pantau semua laporan masyarakat dalam satu tempat
+          </p>
+        </div>
 
         {isLoading ? (
-          <div className="text-center my-5">
-            <Spinner animation="border" />
-          </div>
+          <Spinner
+            size="large"
+            text="Memuat data dashboard..."
+            centered={true}
+          />
         ) : (
-          <>
-            <div className={styles.tableContainer}>
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th className={styles.dashboardId}>No</th>
-                    <th className={styles.dashboardNama}>Nama</th>
-                    <th className={styles.dashboardNohp}>No HP</th>
-                    <th className={styles.dashboardLokasi}>Lokasi</th>
-                    <th className={styles.dashboardDetail}>Detail</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dataUsers.length > 0 ? (
-                    dataUsers.map((item, index) => (
-                      <tr key={item.id}>
-                        <td className={styles.dashboardId}>{index + 1}</td>
-                        <td className={styles.dashboardNama}>{item.nama}</td>
-                        <td className={styles.dashboardNohp}>{item.no_hp}</td>
-                        <td className={styles.dashboardLokasi}>
-                          {item.lokasi}
-                        </td>
-                        <td className={styles.dashboardDetail}>
-                          <Link to={`/detail/${item.id}`}>
-                            <Button variant="info">Detail</Button>
-                          </Link>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="5" className="text-center">
-                        Tidak ada data
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </Table>
-            </div>
-
-            <div className={styles.cardContainer}>
-              {dataUsers.length > 0 ? (
-                dataUsers.map((item, index) => (
-                  <Card key={item.id} className="mb-3">
-                    <Card.Body>
-                      <div className={styles.cardText}>
-                        <span className={styles.cardLabel}>No</span>
-                        <span className={styles.cardValue}>: {index + 1}</span>
-                      </div>
-                      <div className={styles.cardText}>
-                        <span className={styles.cardLabel}>Nama</span>
-                        <span className={styles.cardValue}>: {item.nama}</span>
-                      </div>
-                      <div className={styles.cardText}>
-                        <span className={styles.cardLabel}>No HP</span>
-                        <span className={styles.cardValue}>: {item.no_hp}</span>
-                      </div>
-                      <div className={styles.cardText}>
-                        <span className={styles.cardLabel}>Lokasi</span>
-                        <span className={styles.cardValue}>
-                          : {item.lokasi}
-                        </span>
-                      </div>
-                      <Link
-                        to={`/detail/${item.id}`}
-                        className={styles.cardLink}
-                      >
-                        <Button variant="info">DETAIL</Button>
-                      </Link>
-                    </Card.Body>
-                  </Card>
-                ))
-              ) : (
-                <div className="text-center">Tidak ada data</div>
-              )}
-            </div>
-          </>
+          <div className={styles.tableSection}>
+            <Table
+              columns={tableColumns}
+              data={dataUsers}
+              loading={isLoading}
+              noDataMessage="Belum ada laporan yang masuk"
+              noDataIcon="📋"
+              hover={true}
+              responsive={true}
+            />
+          </div>
         )}
       </Container>
-    </>
+    </div>
   );
 };
 

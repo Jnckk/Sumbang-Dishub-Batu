@@ -1,0 +1,138 @@
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 50px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  justify-content: center;
+  margin: 2px auto;
+  min-width: 110px;
+  text-align: center;
+}
+
+.statusIcon {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.9em;
+}
+
+.statusText {
+  display: inline-flex;
+  align-items: center;
+}
+
+.sizeSmall {
+  padding: 6px;
+  font-size: 0.75rem;
+}
+
+.sizeMedium {
+  padding: 6px;
+  font-size: 0.85rem;
+}
+
+.sizeLarge {
+  padding: 6px;
+  font-size: 0.9rem;
+}
+
+.statusPending {
+  background-color: #eec935;
+  color: white;
+}
+
+.statusProcessing {
+  background-color: #82ceed;
+  color: white;
+}
+
+.statusSuccess {
+  background-color: #447148;
+  color: white;
+}
+
+.statusRejected {
+  background-color: #9b3039;
+  color: white;
+}
+
+.statusRevision {
+  background-color: #f59e0b;
+  color: white;
+}
+
+.statusVerified {
+  background-color: #007bff;
+  color: white;
+}
+
+.statusApproved {
+  background-color: #447048;
+  color: white;
+}
+
+.statusOnhold {
+  background-color: #eec935;
+  color: white;
+}
+
+.statusDefault {
+  background-color: #6c757d;
+  color: white;
+}
+
+.status:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+  .status {
+    gap: 0.3rem;
+    min-width: 100px;
+  }
+
+  .sizeSmall {
+    padding: 5px;
+    font-size: 0.7rem;
+  }
+
+  .sizeMedium {
+    padding: 5px;
+    font-size: 0.8rem;
+  }
+
+  .sizeLarge {
+    padding: 5px;
+    font-size: 0.85rem;
+  }
+
+  .statusIcon {
+    font-size: 0.8em;
+  }
+}
+
+@media (max-width: 480px) {
+  .status {
+    gap: 0.25rem;
+    min-width: 90px;
+  }
+
+  .sizeSmall {
+    padding: 4px;
+    font-size: 0.65rem;
+  }
+
+  .sizeMedium {
+    padding: 4px;
+    font-size: 0.75rem;
+  }
+
+  .sizeLarge {
+    padding: 4px;
+    font-size: 0.8rem;
+  }
+}

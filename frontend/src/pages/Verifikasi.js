@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Container, Table, Card, Form, Spinner } from "react-bootstrap";
-import styles from "../css/pages/Verifikasi.module.css";
+import { Container, Form } from "react-bootstrap";
+import Status from "../components/common/Status";
+import Table from "../components/common/Table";
+import Spinner from "../components/common/Spinner";
+import styles from "../styles/pages/Verifikasi.module.css";
 
 const Verifikasi = () => {
   const [data, setData] = useState([]);
@@ -33,133 +36,103 @@ const Verifikasi = () => {
     )
   );
 
+  const tableColumns = [
+    {
+      key: "number",
+      header: "No",
+      width: "8%",
+      align: "center",
+      className: styles.thId,
+      cellClassName: styles.tdId,
+      render: (item, index) => index + 1,
+    },
+    {
+      key: "nama",
+      header: "Nama",
+      width: "18%",
+      align: "left",
+      className: styles.thNama,
+      cellClassName: styles.tdNama,
+    },
+    {
+      key: "permintaan",
+      header: "Permintaan",
+      width: "20%",
+      align: "left",
+      className: styles.thPermintaan,
+      cellClassName: styles.tdPermintaan,
+    },
+    {
+      key: "lokasi",
+      header: "Lokasi",
+      width: "25%",
+      align: "left",
+      className: styles.thLokasi,
+      cellClassName: styles.tdLokasi,
+    },
+    {
+      key: "date",
+      header: "Tanggal",
+      width: "15%",
+      align: "center",
+      className: styles.thDate,
+      cellClassName: styles.tdDate,
+    },
+    {
+      key: "status",
+      header: "Status",
+      width: "14%",
+      align: "center",
+      className: styles.thStatus,
+      cellClassName: styles.tdStatus,
+      render: (item) => <Status status={item.status} size="small" />,
+    },
+  ];
+
   return (
-    <>
-      <Container className="mt-5">
-        <div className="text-center mb-4">
-          <h2>Status Pelaporan SUMBANG</h2>
+    <div className={styles.verifikasiContainer}>
+      <Container fluid className={styles.container}>
+        <div className={styles.headerSection}>
+          <h1 className={styles.pageTitle}>Status Pelaporan SUMBANG</h1>
+          <p className={styles.pageDescription}>
+            Pantau perkembangan dan status laporan Anda secara real-time
+          </p>
         </div>
 
-        <div className={`mb-4 d-flex justify-content-center`}>
-          <Form.Group controlId="search" className="w-100 w-md-40">
-            <Form.Control
-              type="text"
-              placeholder="Cari berdasarkan nama, permintaan, lokasi, status, atau tanggal"
-              className={styles.searchInput}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </Form.Group>
-        </div>
-
-        {loading ? (
-          <div className="text-center">
-            <Spinner animation="border" />
-          </div>
-        ) : (
-          <>
-            <div className="d-none d-md-block">
-              <Table striped bordered hover className={styles.table}>
-                <thead>
-                  <tr>
-                    <th className={styles.colId}>ID</th>
-                    <th className={styles.colNama}>Nama</th>
-                    <th className={styles.colPermintaan}>Permintaan</th>
-                    <th className={styles.colLokasi}>Lokasi</th>
-                    <th className={styles.colDate}>Date</th>
-                    <th className={styles.colStatus}>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredData.length > 0 ? (
-                    filteredData.map((item, index) => {
-                      const statusClass =
-                        styles[`status${item.status.replace(/\s+/g, "")}`];
-                      return (
-                        <tr key={index}>
-                          <td className={styles.colId}>{index + 1}</td>
-                          <td className={styles.colNama}>{item.nama}</td>
-                          <td className={styles.colPermintaan}>
-                            {item.permintaan}
-                          </td>
-                          <td className={styles.colLokasi}>{item.lokasi}</td>
-                          <td className={styles.colDate}>{item.date}</td>
-                          <td className={`${styles.colStatus} ${statusClass}`}>
-                            {item.status}
-                          </td>
-                        </tr>
-                      );
-                    })
-                  ) : (
-                    <tr>
-                      <td colSpan="6" className="text-center">
-                        Tidak ada data ditemukan
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </Table>
+        <div className={styles.tableSection}>
+          <div className={styles.tableSectionHeader}>
+            <div className={styles.searchSection}>
+              <div className={styles.searchContainer}>
+                <div className={styles.searchIcon}>🔍</div>
+                <Form.Control
+                  type="text"
+                  placeholder="Cari berdasarkan nama, permintaan, lokasi, atau status..."
+                  className={styles.searchInput}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
             </div>
-          </>
-        )}
+          </div>
 
-        <div className="d-block d-md-none">
-          {filteredData.length > 0 ? (
-            filteredData.map((item, index) => {
-              const statusClass =
-                styles[`status${item.status.replace(/\s+/g, "")}`];
-
-              return (
-                <Card
-                  className="mb-3 shadow-sm"
-                  key={index}
-                  style={{ border: "1px solid #ddd", borderRadius: "8px" }}
-                >
-                  <Card.Body>
-                    <Table borderless size="sm" className={styles.mobileTable}>
-                      <tbody>
-                        <tr>
-                          <td className="fw-bold">ID</td>
-                          <td>:</td>
-                          <td>{index + 1}</td>
-                        </tr>
-                        <tr>
-                          <td className="fw-bold">Nama</td>
-                          <td>:</td>
-                          <td>{item.nama}</td>
-                        </tr>
-                        <tr>
-                          <td className="fw-bold">Permintaan</td>
-                          <td>:</td>
-                          <td>{item.permintaan}</td>
-                        </tr>
-                        <tr>
-                          <td className="fw-bold">Lokasi</td>
-                          <td>:</td>
-                          <td>{item.lokasi}</td>
-                        </tr>
-                        <tr>
-                          <td className="fw-bold">Date</td>
-                          <td>:</td>
-                          <td>{item.date}</td>
-                        </tr>
-                        <tr>
-                          <td className="fw-bold">Status</td>
-                          <td>:</td>
-                          <td className={statusClass}>{item.status}</td>
-                        </tr>
-                      </tbody>
-                    </Table>
-                  </Card.Body>
-                </Card>
-              );
-            })
-          ) : (
-            <p className="text-center">Tidak ada data ditemukan</p>
-          )}
+          <div className={styles.contentSection}>
+            {loading ? (
+              <Spinner size="large" text="Memuat data..." centered={true} />
+            ) : (
+              <Table
+                columns={tableColumns}
+                data={filteredData}
+                loading={loading}
+                noDataMessage="Tidak ada data ditemukan"
+                noDataIcon="📄"
+                hover={true}
+                responsive={true}
+              />
+            )}
+          </div>
         </div>
       </Container>
-    </>
+    </div>
   );
 };
 

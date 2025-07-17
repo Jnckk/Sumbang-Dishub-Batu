@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from "react";
-import {
-  Table,
-  Container,
-  Button,
-  Modal,
-  Spinner,
-  Form,
-  Card,
-} from "react-bootstrap";
+import { useEffect, useState, useCallback } from "react";
+import { Container, Form } from "react-bootstrap";
+import Button from "../components/common/Button";
+import Modal from "../components/common/Modal";
+import Table from "../components/common/Table";
+import Spinner from "../components/common/Spinner";
+import Notification from "../components/common/Notification";
+import styles from "../styles/pages/ManageUser.module.css";
 
 const ManageUser = () => {
   const [users, setUsers] = useState([]);
@@ -15,22 +13,30 @@ const ManageUser = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [showMessageModal, setShowMessageModal] = useState(false);
-  const [message, setMessage] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const [updating, setUpdating] = useState(false);
+
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+    type: "info",
+  });
 
   const [newUsername, setNewUsername] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [newRole, setNewRole] = useState("1");
   const [adding, setAdding] = useState(false);
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+  const showNotification = (message, type = "info") => {
+    setNotification({
+      show: true,
+      message,
+      type,
+    });
+  };
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(
@@ -52,19 +58,19 @@ const ManageUser = () => {
       }
     } catch (error) {
       console.error("Error fetching users:", error);
+      showNotification("Gagal memuat data pengguna", "error");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const showMessage = (msg) => {
-    setMessage(msg);
-    setShowMessageModal(true);
-  };
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   const handleAddUser = async () => {
     if (!newUsername || !newPassword) {
-      showMessage("Username dan password tidak boleh kosong!");
+      showNotification("Username dan password tidak boleh kosong!", "warning");
       return;
     }
 
@@ -89,7 +95,7 @@ const ManageUser = () => {
       const result = await response.json();
 
       if (response.ok) {
-        showMessage("User berhasil ditambahkan!");
+        showNotification("User berhasil ditambahkan!", "success");
         fetchUsers();
         setShowAddModal(false);
         setNewUsername("");
@@ -100,7 +106,7 @@ const ManageUser = () => {
       }
     } catch (error) {
       console.error("Error adding user:", error);
-      showMessage(error.message);
+      showNotification(error.message, "error");
     } finally {
       setAdding(false);
     }
@@ -110,7 +116,10 @@ const ManageUser = () => {
     if (!selectedUser) return;
 
     if (!newUsername && !newPassword) {
-      showMessage("Harap isi setidaknya username atau password baru!");
+      showNotification(
+        "Harap isi setidaknya username atau password baru!",
+        "warning"
+      );
       return;
     }
 
@@ -134,7 +143,7 @@ const ManageUser = () => {
       const result = await response.json();
 
       if (response.ok) {
-        showMessage("User berhasil diperbarui!");
+        showNotification("User berhasil diperbarui!", "success");
         fetchUsers();
         setShowEditModal(false);
         setNewUsername("");
@@ -144,7 +153,7 @@ const ManageUser = () => {
       }
     } catch (error) {
       console.error("Error updating user:", error);
-      showMessage(error.message);
+      showNotification(error.message, "error");
     } finally {
       setUpdating(false);
     }
@@ -168,7 +177,7 @@ const ManageUser = () => {
       const result = await response.json();
 
       if (response.ok) {
-        showMessage("User berhasil dihapus!");
+        showNotification("User berhasil dihapus!", "success");
         setUsers(users.filter((user) => user.id !== selectedUser.id));
         setShowDeleteModal(false);
       } else {
@@ -176,270 +185,237 @@ const ManageUser = () => {
       }
     } catch (error) {
       console.error("Error deleting user:", error);
-      showMessage(error.message);
+      showNotification(error.message, "error");
     } finally {
       setDeleting(false);
     }
   };
 
+  const tableData = users.map((user) => ({
+    id: user.id,
+    username: user.username,
+    role: user.role === 1 ? "SuperAdmin" : "Admin",
+    actions: (
+      <div className={styles.actionButtons}>
+        <Button
+          variant="warning"
+          size="small"
+          icon="✏️"
+          onClick={() => {
+            setSelectedUser(user);
+            setNewUsername("");
+            setNewPassword("");
+            setShowEditModal(true);
+          }}
+        >
+          Edit
+        </Button>
+        <Button
+          variant="danger"
+          size="small"
+          icon="🗑️"
+          onClick={() => {
+            setSelectedUser(user);
+            setShowDeleteModal(true);
+          }}
+        >
+          Hapus
+        </Button>
+      </div>
+    ),
+  }));
+
+  const tableColumns = [
+    {
+      key: "id",
+      header: "ID",
+      width: "35%",
+      align: "left",
+    },
+    {
+      key: "username",
+      header: "Username",
+      width: "25%",
+      align: "left",
+      render: (item) => <strong>{item.username}</strong>,
+    },
+    {
+      key: "role",
+      header: "Role",
+      width: "15%",
+      align: "center",
+      render: (item) => <span className={styles.roleTag}>{item.role}</span>,
+    },
+    {
+      key: "actions",
+      header: "Aksi",
+      width: "25%",
+      align: "center",
+      render: (item) => item.actions,
+    },
+  ];
+
   return (
-    <>
-      <Container className="mt-5">
-        <div className="d-flex justify-content-between mb-3">
-          <h2>Manage Users</h2>
-          <Button variant="primary" onClick={() => setShowAddModal(true)}>
-            Add User
-          </Button>
+    <div className={styles.manageUserContainer}>
+      <Container className={styles.container}>
+        <div className={styles.headerSection}>
+          <h1 className={styles.pageTitle}>Kelola Pengguna</h1>
+          <p className={styles.pageDescription}>
+            Manajemen pengguna sistem SUMBANG
+          </p>
         </div>
 
-        {loading ? (
-          <div className="text-center">
-            <Spinner animation="border" />
-          </div>
-        ) : (
-          <>
-            <Table striped bordered hover className="d-none d-md-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Username</th>
-                  <th>Role</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.length > 0 ? (
-                  users.map((user) => (
-                    <tr key={user.id}>
-                      <td>{user.id}</td>
-                      <td>{user.username}</td>
-                      <td>{user.role === 1 ? "SuperAdmin" : "Admin"}</td>
-                      <td>
-                        <Button
-                          variant="warning"
-                          className="me-2"
-                          onClick={() => {
-                            setSelectedUser(user);
-                            setShowEditModal(true);
-                          }}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          variant="danger"
-                          onClick={() => {
-                            setSelectedUser(user);
-                            setShowDeleteModal(true);
-                          }}
-                        >
-                          Delete
-                        </Button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="4" className="text-center">
-                      Tidak ada pengguna.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </Table>
-
-            <div className="d-block d-md-none">
-              {users.length > 0 ? (
-                users.map((user) => (
-                  <Card key={user.id} className="mb-3 shadow-sm">
-                    <Card.Body>
-                      <Card.Body>
-                        <Card.Title className="fw-bold">
-                          {user.username}
-                        </Card.Title>
-                        <div>
-                          <Table borderless size="sm" className="m-0">
-                            <tbody>
-                              <tr>
-                                <td className="fw-bold">ID</td>
-                                <td>:</td>
-                                <td>{user.id}</td>
-                              </tr>
-                              <tr>
-                                <td className="fw-bold">Role</td>
-                                <td>:</td>
-                                <td>
-                                  {user.role === 1 ? "SuperAdmin" : "Admin"}
-                                </td>
-                              </tr>
-                            </tbody>
-                          </Table>
-                        </div>
-                      </Card.Body>
-
-                      <div className="d-flex">
-                        <Button
-                          variant="warning"
-                          className="me-2"
-                          onClick={() => {
-                            setSelectedUser(user);
-                            setShowEditModal(true);
-                          }}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          variant="danger"
-                          onClick={() => {
-                            setSelectedUser(user);
-                            setShowDeleteModal(true);
-                          }}
-                        >
-                          Delete
-                        </Button>
-                      </div>
-                    </Card.Body>
-                  </Card>
-                ))
-              ) : (
-                <p className="text-center">Tidak ada pengguna.</p>
-              )}
+        <div className={styles.tableSection}>
+          <div className={styles.tableSectionHeader}>
+            <div className={styles.tableTitle}>
+              <h2>Daftar Pengguna</h2>
             </div>
-          </>
-        )}
+            <div className={styles.tableActions}>
+              <Button
+                variant="primary"
+                icon="➕"
+                onClick={() => {
+                  setNewUsername("");
+                  setNewPassword("");
+                  setNewRole("1");
+                  setShowAddModal(true);
+                }}
+              >
+                Tambah Pengguna
+              </Button>
+            </div>
+          </div>
 
-        <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
-          <Modal.Header closeButton>
-            <Modal.Title>Add User</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <Form.Group className="mb-3">
-                <Form.Label>Username</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={newUsername}
-                  onChange={(e) => setNewUsername(e.target.value)}
-                  placeholder="Enter username"
-                />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Enter password"
-                />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label>Role</Form.Label>
-                <Form.Select
-                  value={newRole}
-                  onChange={(e) => setNewRole(e.target.value)}
-                >
-                  <option value="1">SuperAdmin</option>
-                  <option value="2">Admin</option>
-                </Form.Select>
-              </Form.Group>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowAddModal(false)}>
-              Batal
-            </Button>
-            <Button variant="primary" onClick={handleAddUser} disabled={adding}>
-              {adding ? "Adding..." : "Add"}
-            </Button>
-          </Modal.Footer>
-        </Modal>
-
-        <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
-          <Modal.Header closeButton>
-            <Modal.Title>Edit User</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <Form.Group className="mb-3">
-                <Form.Label>Username Baru</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={newUsername}
-                  onChange={(e) => setNewUsername(e.target.value)}
-                  placeholder="Masukkan username baru"
-                />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label>Password Baru</Form.Label>
-                <Form.Control
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Masukkan password baru"
-                />
-              </Form.Group>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowEditModal(false)}>
-              Batal
-            </Button>
-            <Button
-              variant="warning"
-              onClick={handleEditUser}
-              disabled={updating}
-            >
-              {updating ? "Updating..." : "Update"}
-            </Button>
-          </Modal.Footer>
-        </Modal>
-
-        <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
-          <Modal.Header closeButton>
-            <Modal.Title>Confirm Deletion</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <p>
-              Apakah Anda yakin ingin menghapus pengguna{" "}
-              <strong>{selectedUser?.username}</strong>?
-            </p>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="secondary"
-              onClick={() => setShowDeleteModal(false)}
-              disabled={deleting}
-            >
-              Batal
-            </Button>
-            <Button
-              variant="danger"
-              onClick={handleDeleteUser}
-              disabled={deleting}
-            >
-              {deleting ? "Deleting..." : "Hapus"}
-            </Button>
-          </Modal.Footer>
-        </Modal>
-
-        <Modal
-          show={showMessageModal}
-          onHide={() => setShowMessageModal(false)}
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Pesan</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>{message}</Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="secondary"
-              onClick={() => setShowMessageModal(false)}
-            >
-              OK
-            </Button>
-          </Modal.Footer>
-        </Modal>
+          <div className={styles.contentSection}>
+            {loading ? (
+              <Spinner
+                size="large"
+                text="Memuat data pengguna..."
+                centered={true}
+              />
+            ) : (
+              <Table
+                columns={tableColumns}
+                data={tableData}
+                hover={true}
+                responsive={true}
+                noDataMessage="Tidak ada pengguna"
+                noDataIcon="👥"
+              />
+            )}
+          </div>
+        </div>
       </Container>
-    </>
+
+      <Modal
+        show={showAddModal}
+        onHide={() => setShowAddModal(false)}
+        title="Tambah Pengguna"
+        showConfirmButton={true}
+        showCancelButton={true}
+        confirmText="Tambah"
+        cancelText="Batal"
+        onConfirm={handleAddUser}
+        onCancel={() => setShowAddModal(false)}
+        loading={adding}
+      >
+        <Form>
+          <Form.Group className="mb-3">
+            <Form.Label>Username</Form.Label>
+            <Form.Control
+              type="text"
+              value={newUsername}
+              onChange={(e) => setNewUsername(e.target.value)}
+              placeholder="Masukkan username"
+            />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Masukkan password"
+            />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Role</Form.Label>
+            <Form.Select
+              value={newRole}
+              onChange={(e) => setNewRole(e.target.value)}
+            >
+              <option value="1">SuperAdmin</option>
+              <option value="2">Admin</option>
+            </Form.Select>
+          </Form.Group>
+        </Form>
+      </Modal>
+
+      <Modal
+        show={showEditModal}
+        onHide={() => setShowEditModal(false)}
+        title="Edit Pengguna"
+        showConfirmButton={true}
+        showCancelButton={true}
+        confirmText="Update"
+        cancelText="Batal"
+        confirmVariant="warning"
+        onConfirm={handleEditUser}
+        onCancel={() => setShowEditModal(false)}
+        loading={updating}
+      >
+        <Form>
+          <Form.Group className="mb-3">
+            <Form.Label>Username Baru</Form.Label>
+            <Form.Control
+              type="text"
+              value={newUsername}
+              onChange={(e) => setNewUsername(e.target.value)}
+              placeholder="Masukkan username baru"
+            />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Password Baru</Form.Label>
+            <Form.Control
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Masukkan password baru"
+            />
+          </Form.Group>
+        </Form>
+      </Modal>
+
+      <Modal
+        show={showDeleteModal}
+        onHide={() => setShowDeleteModal(false)}
+        title="Konfirmasi Hapus"
+        type="confirmation"
+        showConfirmButton={true}
+        showCancelButton={true}
+        confirmText="Hapus"
+        cancelText="Batal"
+        confirmVariant="danger"
+        onConfirm={handleDeleteUser}
+        onCancel={() => setShowDeleteModal(false)}
+        loading={deleting}
+      >
+        <p>
+          Apakah Anda yakin ingin menghapus pengguna{" "}
+          <strong>{selectedUser?.username}</strong>?
+        </p>
+      </Modal>
+
+      {/* Notification */}
+      <Notification
+        message={notification.message}
+        type={notification.type}
+        show={notification.show}
+        onClose={() => setNotification((prev) => ({ ...prev, show: false }))}
+        duration={4000}
+        position="top-right"
+      />
+    </div>
   );
 };
 

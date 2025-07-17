@@ -1,0 +1,530 @@
+.verifikasiContainer {
+  min-height: 100vh;
+  background: transparent;
+  padding: 2rem 0;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.headerSection {
+  text-align: center;
+  margin-bottom: 3rem;
+  color: var(--primary-text-color);
+}
+
+/* Explicit global color inheritance */
+.headerSection,
+.headerSection * {
+  color: var(--primary-text-color) !important;
+}
+
+.pageTitle {
+  font-family: "Poppins", sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-text-color) !important;
+  margin-bottom: 1rem;
+}
+
+.pageDescription {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.1rem;
+  color: var(--primary-text-color) !important;
+  margin-bottom: 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+.searchSection {
+  flex: 1;
+  max-width: 500px;
+}
+
+.tableSection {
+  margin-bottom: 3rem;
+}
+
+.tableSectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 0 0.5rem;
+  gap: 2rem;
+}
+
+.tableInfo {
+  display: flex;
+  align-items: center;
+}
+
+.dataCount {
+  font-family: "Poppins", sans-serif;
+  font-size: 0.9rem;
+  color: var(--secondary-text-color);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.searchContainer {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.searchIcon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: #64748b;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100% !important;
+  padding: 12px 45px 12px 16px !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  font-size: 16px !important;
+  color: #333333 !important;
+  transition: all 0.3s ease !important;
+  outline: none !important;
+  box-shadow: none !important;
+  line-height: 1.5 !important;
+  height: auto !important;
+  min-height: 44px !important;
+  font-family: "Poppins", sans-serif !important;
+}
+
+.searchInput:focus {
+  border-color: #4f46e5 !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1) !important;
+  outline: none !important;
+  background: #ffffff !important;
+}
+
+.searchInput::placeholder {
+  color: #888888 !important;
+  opacity: 1 !important;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 0;
+  gap: 1rem;
+}
+
+.spinner {
+  width: 3rem;
+  height: 3rem;
+  color: #64b5f6;
+}
+
+.loadingText {
+  font-family: "Poppins", sans-serif;
+  color: #64748b;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.desktopTable {
+  display: block;
+}
+
+.modernTable {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  background: white;
+  table-layout: fixed;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modernTable thead {
+  background-color: #007bff !important;
+}
+
+.modernTable th {
+  padding: 12px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  color: white !important;
+  text-align: center;
+  vertical-align: middle;
+  border: none;
+  font-size: 0.9rem;
+  background-color: #007bff !important;
+}
+
+.modernTable thead th {
+  background-color: #007bff !important;
+  color: white !important;
+}
+
+.modernTable tbody tr {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.modernTable tbody tr:hover {
+  background: rgba(0, 123, 255, 0.05);
+}
+
+.modernTable td {
+  padding: 12px;
+  font-family: "Poppins", sans-serif;
+  color: var(--primary-text-color);
+  vertical-align: middle;
+  border: none;
+  font-size: 0.9rem;
+  text-align: center;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.thId,
+.tdId {
+  width: 8%;
+  text-align: center;
+}
+
+.thNama,
+.tdNama {
+  width: 18%;
+  text-align: left;
+}
+
+.thPermintaan,
+.tdPermintaan {
+  width: 20%;
+  text-align: left;
+}
+
+.thLokasi,
+.tdLokasi {
+  width: 25%;
+  text-align: left;
+}
+
+.thDate,
+.tdDate {
+  width: 15%;
+}
+
+.thStatus,
+.tdStatus {
+  width: 14%;
+  text-align: center;
+}
+
+.modernTable thead th {
+  background-color: #007bff !important;
+  color: white !important;
+}
+
+.noData {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #64748b;
+}
+
+.noDataContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.noDataIcon {
+  font-size: 3rem;
+  opacity: 0.5;
+}
+
+.mobileCards {
+  display: none;
+  gap: 1rem;
+  flex-direction: column;
+}
+
+.mobileCard {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.mobileCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.cardNumber {
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  color: var(--primary-text-color);
+  font-size: 1rem;
+}
+
+.cardBody {
+  padding: 1.2rem;
+}
+
+.cardRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.8rem;
+  gap: 1rem;
+}
+
+.cardRow:last-child {
+  margin-bottom: 0;
+}
+
+.cardLabel {
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  color: #64748b;
+  font-size: 0.85rem;
+  min-width: 80px;
+  flex-shrink: 0;
+}
+
+.cardValue {
+  font-family: "Poppins", sans-serif;
+  color: var(--primary-text-color);
+  font-size: 0.85rem;
+  text-align: right;
+  word-break: break-word;
+}
+
+.noDataMobile {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 1rem;
+  color: #64748b;
+}
+
+@media (max-width: 768px) {
+  .verifikasiContainer {
+    padding: 1rem 0;
+  }
+
+  .container {
+    max-width: 100%;
+    padding: 0 0.5rem;
+  }
+
+  .pageTitle {
+    font-size: 2rem;
+  }
+
+  .pageDescription {
+    font-size: 1rem;
+  }
+
+  .tableSectionHeader {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .searchSection {
+    max-width: 100%;
+  }
+
+  .tableInfo {
+    justify-content: center;
+  }
+
+  .desktopTable {
+    display: none;
+  }
+
+  .mobileCards {
+    display: flex;
+  }
+
+  .searchInput {
+    padding: 12px 45px 12px 16px !important;
+    font-size: 16px !important;
+    min-height: 44px !important;
+    border-radius: 8px !important;
+    border: 1px solid #e0e0e0 !important;
+    background: #ffffff !important;
+  }
+
+  .searchIcon {
+    font-size: 1.2rem;
+    right: 1rem;
+    left: auto;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+  .modernTable th,
+  .modernTable td {
+    padding: 10px 8px;
+    font-size: 0.85rem;
+  }
+
+  .thId,
+  .tdId {
+    width: 6%;
+  }
+
+  .thNama,
+  .tdNama {
+    width: 16%;
+  }
+
+  .thPermintaan,
+  .tdPermintaan {
+    width: 18%;
+  }
+
+  .thLokasi,
+  .tdLokasi {
+    width: 28%;
+  }
+
+  .thDate,
+  .tdDate {
+    width: 16%;
+  }
+
+  .thStatus,
+  .tdStatus {
+    width: 16%;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 0.5rem;
+  }
+
+  .pageTitle {
+    font-size: 1.8rem;
+  }
+
+  .pageDescription {
+    font-size: 0.9rem;
+  }
+
+  .searchContainer {
+    max-width: 100%;
+    padding: 0 0.5rem;
+  }
+
+  .searchInput {
+    padding: 12px 45px 12px 16px !important;
+    font-size: 16px !important;
+    min-height: 44px !important;
+    border-radius: 8px !important;
+    border: 1px solid #e0e0e0 !important;
+    background: #ffffff !important;
+  }
+
+  .searchIcon {
+    font-size: 1.2rem;
+    right: 1rem;
+    left: auto;
+  }
+
+  .cardHeader {
+    padding: 1rem;
+  }
+
+  .cardBody {
+    padding: 1rem;
+  }
+
+  .cardRow {
+    margin-bottom: 0.6rem;
+  }
+
+  .cardLabel {
+    font-size: 0.8rem;
+    min-width: 70px;
+  }
+
+  .cardValue {
+    font-size: 0.8rem;
+  }
+}
+
+/* Override Bootstrap table styles */
+.modernTable.table thead th {
+  background-color: #007bff !important;
+  color: white !important;
+  border-color: #007bff !important;
+}
+
+/* Additional responsive breakpoints */
+@media (max-width: 576px) {
+  .searchSection {
+    margin-bottom: 1.5rem;
+  }
+
+  .searchContainer {
+    padding: 0 0.25rem;
+  }
+
+  .searchInput {
+    padding: 10px 40px 10px 14px !important;
+    font-size: 16px !important;
+    min-height: 42px !important;
+  }
+
+  .searchIcon {
+    font-size: 1.1rem;
+    right: 0.8rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .searchInput {
+    padding: 10px 35px 10px 12px !important;
+    font-size: 16px !important;
+    min-height: 40px !important;
+  }
+
+  .searchIcon {
+    font-size: 1rem;
+    right: 0.7rem;
+  }
+}
+
+.modernTable.table-striped thead th,
+.modernTable.table-bordered thead th,
+.modernTable.table-hover thead th {
+  background-color: #007bff !important;
+  color: white !important;
+}

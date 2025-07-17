@@ -1,0 +1,399 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+.rightSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.detailContainer {
+  font-family: "Poppins", sans-serif;
+  min-height: 100vh;
+  padding: 2rem 0;
+  background: transparent;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.headerSection {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.pageTitle {
+  font-family: "Poppins", sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-text-color);
+  margin-bottom: 1rem;
+}
+
+.pageDescription {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.1rem;
+  color: var(--primary-text-color);
+  margin-bottom: 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 0;
+  gap: 1rem;
+}
+
+.spinner {
+  width: 3rem;
+  height: 3rem;
+  color: #64b5f6;
+}
+
+.loadingText {
+  font-family: "Poppins", sans-serif;
+  color: #64748b;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.errorState {
+  text-align: center;
+  padding: 4rem 0;
+  color: #ef4444;
+}
+
+.contentSection {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 2.5rem;
+  margin-bottom: 3rem;
+}
+
+.tableSection {
+  margin-top: 0;
+}
+
+.linkButton {
+  color: #64b5f6;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.linkButton:hover {
+  color: #42a5f5;
+  text-decoration: underline;
+}
+
+.noData {
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0;
+}
+
+.rightSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.documentPreview {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.documentFrame {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: white;
+}
+
+.documentLink {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  text-decoration: none;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.documentLink:hover {
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  transform: scale(1.05);
+}
+
+.imageContainer {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.imageLink {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  text-decoration: none;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.imageLink:hover {
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  transform: scale(1.05);
+}
+
+.noDocument {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  color: #94a3b8;
+}
+
+.noDocumentIcon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.noDocumentText {
+  font-family: "Poppins", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.reportImage {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.reportImage:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.noImage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 150px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  color: #94a3b8;
+}
+
+.noImageIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.noImageText {
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.mobileDocumentPreview {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 1rem;
+  transition: all 0.3s ease;
+}
+
+.mobileDocumentIcon {
+  font-size: 2rem;
+  color: var(--bs-primary);
+}
+
+.mobileDocumentInfo {
+  flex: 1;
+}
+
+.mobileDocumentTitle {
+  font-weight: 600;
+  color: var(--primary-text-color);
+  margin: 0 0 0.25rem 0;
+  font-size: 1rem;
+}
+
+.mobileDocumentSubtitle {
+  color: var(--secondary-text-color);
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.mobileDocumentLink {
+  background: var(--bs-primary);
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.mobileDocumentLink:hover {
+  background: var(--bs-primary-dark);
+  color: white;
+  transform: translateY(-1px);
+}
+
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1600px;
+    padding: 0 3rem;
+  }
+
+  .contentSection {
+    grid-template-columns: 1.4fr 1fr;
+    gap: 3rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .container {
+    max-width: 100%;
+    padding: 0 1.5rem;
+  }
+
+  .contentSection {
+    grid-template-columns: 1.2fr 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .detailContainer {
+    padding: 1rem 0;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+
+  .pageTitle {
+    font-size: 2rem;
+  }
+
+  .pageDescription {
+    font-size: 1rem;
+  }
+
+  .contentSection {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .rightSection {
+    gap: 1rem;
+  }
+
+  .documentSection,
+  .imageSection {
+    padding: 0.75rem;
+  }
+
+  .documentPreview {
+    height: 150px;
+  }
+
+  .reportImage {
+    border-radius: 6px;
+  }
+
+  .noImage {
+    height: 120px;
+    border-radius: 6px;
+  }
+}
+@media (max-width: 480px) {
+  .container {
+    padding: 0 0.5rem;
+  }
+
+  .pageTitle {
+    font-size: 1.8rem;
+  }
+
+  .pageDescription {
+    font-size: 0.9rem;
+  }
+
+  .reportImage {
+    border-radius: 6px;
+  }
+
+  .noImage {
+    height: 120px;
+    border-radius: 6px;
+  }
+
+  .noImageIcon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .noImageText {
+    font-size: 0.9rem;
+  }
+}

@@ -1,13 +1,9 @@
-import React, { useState } from "react";
-import {
-  Form,
-  Button,
-  Container,
-  Row,
-  Col,
-  Spinner,
-  Modal,
-} from "react-bootstrap";
+import { useState } from "react";
+import { Form, Container } from "react-bootstrap";
+import Button from "../components/common/Button";
+import Modal from "../components/common/Modal";
+import Notification from "../components/common/Notification";
+import styles from "../styles/pages/Pelaporan.module.css";
 
 const Pelaporan = () => {
   const [formData, setFormData] = useState({
@@ -24,21 +20,73 @@ const Pelaporan = () => {
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState({ type: "", text: "" });
   const [showModal, setShowModal] = useState(false);
-  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [sameAsHP, setSameAsHP] = useState(true);
+  const [sameAsAddress, setSameAsAddress] = useState(false);
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+    type: "info",
+  });
+
+  const showNotification = (message, type = "info") => {
+    setNotification({
+      show: true,
+      message,
+      type,
+    });
+  };
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: files ? files[0] : value,
-    }));
+
+    if (name === "no_hp" && sameAsHP) {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: files ? files[0] : value,
+        no_whatsapp: files ? files[0] : value,
+      }));
+    } else if (name === "alamat" && sameAsAddress) {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: files ? files[0] : value,
+        lokasi: files ? files[0] : value,
+      }));
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: files ? files[0] : value,
+      }));
+    }
 
     if (errors[name]) {
       setErrors((prevErrors) => ({
         ...prevErrors,
         [name]: "",
+      }));
+    }
+  };
+
+  const handleSameAsHPChange = (e) => {
+    const isChecked = e.target.checked;
+    setSameAsHP(isChecked);
+
+    if (isChecked) {
+      setFormData((prevData) => ({
+        ...prevData,
+        no_whatsapp: prevData.no_hp,
+      }));
+    }
+  };
+
+  const handleSameAsAddressChange = (e) => {
+    const isChecked = e.target.checked;
+    setSameAsAddress(isChecked);
+
+    if (isChecked) {
+      setFormData((prevData) => ({
+        ...prevData,
+        lokasi: prevData.alamat,
       }));
     }
   };
@@ -85,6 +133,11 @@ const Pelaporan = () => {
     const isValid = validateForm();
     if (isValid) {
       setShowModal(true);
+    } else {
+      showNotification(
+        "Mohon lengkapi semua field yang wajib diisi!",
+        "warning"
+      );
     }
   };
 
@@ -95,7 +148,6 @@ const Pelaporan = () => {
     }
 
     setLoading(true);
-    setMessage({ type: "", text: "" });
 
     let permintaanValue = formData.permintaan === "Pengadaan" ? 1 : 2;
 
@@ -118,7 +170,10 @@ const Pelaporan = () => {
       const result = await response.json();
 
       if (response.ok) {
-        setMessage({ type: "success", text: "Pelaporan berhasil dikirim!" });
+        showNotification(
+          "Pelaporan berhasil dikirim! Terima kasih atas laporan Anda.",
+          "success"
+        );
         setFormData({
           nama: "",
           alamat: "",
@@ -130,209 +185,325 @@ const Pelaporan = () => {
           surat: null,
           foto: null,
         });
+        setSameAsHP(true);
+        setSameAsAddress(false);
       } else {
         throw new Error(result.message || "Gagal mengirim laporan.");
       }
     } catch (error) {
-      setMessage({ type: "danger", text: error.message });
+      showNotification(
+        error.message || "Terjadi kesalahan saat mengirim laporan.",
+        "error"
+      );
     } finally {
       setLoading(false);
       setShowModal(false);
-      setShowMessageModal(true);
     }
   };
 
   return (
     <>
-      <Container className="mt-5">
-        <div className="text-center mb-4">
-          <h2>Form Pelaporan SUMBANG</h2>
-        </div>
+      <div className={styles.pelaporanContainer}>
+        <Container>
+          <div className={styles.headerSection}>
+            <h1 className={styles.pageTitle}>Form Pelaporan SUMBANG</h1>
+            <p className={styles.pageDescription}>
+              Sampaikan keluhan, saran, atau permintaan Anda untuk sarana dan
+              prasarana transportasi di Kota Batu dengan mudah dan cepat.
+            </p>
+          </div>
 
-        <Form onSubmit={(e) => e.preventDefault()}>
-          <Row>
-            <Col md={6}>
-              <Form.Group controlId="formNama">
-                <Form.Label>Nama</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="nama"
-                  placeholder="Masukkan nama"
-                  value={formData.nama}
-                  onChange={handleChange}
-                />
-                {errors.nama && (
-                  <div className="text-danger">{errors.nama}</div>
-                )}
-              </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group controlId="formAlamat">
-                <Form.Label>Alamat</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="alamat"
-                  placeholder="Masukkan alamat"
-                  value={formData.alamat}
-                  onChange={handleChange}
-                />
-                {errors.alamat && (
-                  <div className="text-danger">{errors.alamat}</div>
-                )}
-              </Form.Group>
-            </Col>
-          </Row>
+          <div className={styles.formContainer}>
+            <Form onSubmit={(e) => e.preventDefault()}>
+              {/* Data Pribadi */}
+              <div className={styles.formSection}>
+                <h3 className={styles.sectionTitle}>
+                  <span className={styles.sectionIcon}>1</span>
+                  Data Pribadi
+                </h3>
+                <div className={styles.formRow}>
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Nama Lengkap</label>
+                    <input
+                      type="text"
+                      name="nama"
+                      className={styles.formControl}
+                      placeholder="Masukkan nama lengkap"
+                      value={formData.nama}
+                      onChange={handleChange}
+                    />
+                    {errors.nama && (
+                      <div className={styles.errorMessage}>
+                        ⚠️ {errors.nama}
+                      </div>
+                    )}
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Alamat</label>
+                    <input
+                      type="text"
+                      name="alamat"
+                      className={styles.formControl}
+                      placeholder="Masukkan alamat lengkap"
+                      value={formData.alamat}
+                      onChange={handleChange}
+                    />
+                    {errors.alamat && (
+                      <div className={styles.errorMessage}>
+                        ⚠️ {errors.alamat}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className={styles.formRow}>
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Nomor HP</label>
+                    <input
+                      type="tel"
+                      name="no_hp"
+                      className={styles.formControl}
+                      placeholder="Contoh: 08123456789"
+                      value={formData.no_hp}
+                      onChange={handleChange}
+                    />
+                    {errors.no_hp && (
+                      <div className={styles.errorMessage}>
+                        ⚠️ {errors.no_hp}
+                      </div>
+                    )}
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Nomor WhatsApp</label>
+                    <div className={styles.whatsappGroup}>
+                      <input
+                        type="tel"
+                        name="no_whatsapp"
+                        className={styles.formControl}
+                        placeholder="Contoh: 08123456789"
+                        value={formData.no_whatsapp}
+                        onChange={handleChange}
+                        disabled={sameAsHP}
+                      />
+                      <div className={styles.checkboxGroup}>
+                        <label className={styles.checkboxLabel}>
+                          <input
+                            type="checkbox"
+                            checked={sameAsHP}
+                            onChange={handleSameAsHPChange}
+                            className={styles.checkbox}
+                          />
+                          <span className={styles.checkboxText}>
+                            Sama dengan No HP
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                    {errors.no_whatsapp && (
+                      <div className={styles.errorMessage}>
+                        ⚠️ {errors.no_whatsapp}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
 
-          <Row>
-            <Col md={6}>
-              <Form.Group controlId="formno_hp">
-                <Form.Label>No HP</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="no_hp"
-                  placeholder="Masukkan nomor HP"
-                  value={formData.no_hp}
-                  onChange={handleChange}
-                />
-                {errors.no_hp && (
-                  <div className="text-danger">{errors.no_hp}</div>
-                )}
-              </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group controlId="formno_whatsapp">
-                <Form.Label>No Whatsapp</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="no_whatsapp"
-                  placeholder="Masukkan nomor Whatsapp"
-                  value={formData.no_whatsapp}
-                  onChange={handleChange}
-                />
-                {errors.no_whatsapp && (
-                  <div className="text-danger">{errors.no_whatsapp}</div>
-                )}
-              </Form.Group>
-            </Col>
-          </Row>
+              {/* Detail Permintaan */}
+              <div className={styles.formSection}>
+                <h3 className={styles.sectionTitle}>
+                  <span className={styles.sectionIcon}>2</span>
+                  Detail Permintaan
+                </h3>
+                <div className={styles.formRow}>
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Jenis Permintaan</label>
+                    <select
+                      name="permintaan"
+                      className={`${styles.formControl} ${styles.selectControl}`}
+                      value={formData.permintaan}
+                      onChange={handleChange}
+                    >
+                      <option value="">Pilih jenis permintaan</option>
+                      <option value="Pengadaan">
+                        Pengadaan Sarana/Prasarana
+                      </option>
+                      <option value="Perbaikan">
+                        Perbaikan Sarana/Prasarana
+                      </option>
+                    </select>
+                    {errors.permintaan && (
+                      <div className={styles.errorMessage}>
+                        ⚠️ {errors.permintaan}
+                      </div>
+                    )}
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Lokasi</label>
+                    <div className={styles.locationGroup}>
+                      <input
+                        type="text"
+                        name="lokasi"
+                        className={styles.formControl}
+                        placeholder="Contoh: Jl. Raya Batu No. 123"
+                        value={formData.lokasi}
+                        onChange={handleChange}
+                        disabled={sameAsAddress}
+                      />
+                      <div className={styles.checkboxGroup}>
+                        <label className={styles.checkboxLabel}>
+                          <input
+                            type="checkbox"
+                            checked={sameAsAddress}
+                            onChange={handleSameAsAddressChange}
+                            className={styles.checkbox}
+                          />
+                          <span className={styles.checkboxText}>
+                            Sama dengan Alamat
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                    {errors.lokasi && (
+                      <div className={styles.errorMessage}>
+                        ⚠️ {errors.lokasi}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>Detail Permintaan</label>
+                  <textarea
+                    name="detail_permintaan"
+                    className={`${styles.formControl} ${styles.textareaControl}`}
+                    placeholder="Jelaskan detail permintaan Anda secara lengkap..."
+                    value={formData.detail_permintaan}
+                    onChange={handleChange}
+                  />
+                  {errors.detail_permintaan && (
+                    <div className={styles.errorMessage}>
+                      ⚠️ {errors.detail_permintaan}
+                    </div>
+                  )}
+                </div>
+              </div>
 
-          <Form.Group controlId="formPermintaan">
-            <Form.Label>Permintaan</Form.Label>
-            <Form.Control
-              as="select"
-              name="permintaan"
-              value={formData.permintaan}
-              onChange={handleChange}
-            >
-              <option value="">Pilih Permintaan</option>
-              <option value="Pengadaan">Pengadaan</option>
-              <option value="Perbaikan">Perbaikan</option>
-            </Form.Control>
-            {errors.permintaan && (
-              <div className="text-danger">{errors.permintaan}</div>
-            )}
-          </Form.Group>
+              {/* Upload Dokumen */}
+              <div className={styles.formSection}>
+                <h3 className={styles.sectionTitle}>
+                  <span className={styles.sectionIcon}>3</span>
+                  Upload Dokumen
+                </h3>
+                <div className={styles.formRow}>
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Surat Pengajuan</label>
+                    <div className={styles.fileControl}>
+                      <input
+                        type="file"
+                        name="surat"
+                        accept=".pdf"
+                        onChange={handleChange}
+                      />
+                      <div className={styles.fileControlContent}>
+                        <div className={styles.fileIcon}>📄</div>
+                        <div className={styles.fileText}>
+                          {formData.surat
+                            ? formData.surat.name
+                            : "Pilih file PDF"}
+                        </div>
+                        <div className={styles.fileSubtext}>
+                          Format: PDF, Maksimal 5MB
+                        </div>
+                      </div>
+                    </div>
+                    {errors.surat && (
+                      <div className={styles.errorMessage}>
+                        ⚠️ {errors.surat}
+                      </div>
+                    )}
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Foto Pendukung</label>
+                    <div className={styles.fileControl}>
+                      <input
+                        type="file"
+                        name="foto"
+                        accept=".jpg,.jpeg,.png"
+                        onChange={handleChange}
+                      />
+                      <div className={styles.fileControlContent}>
+                        <div className={styles.fileIcon}>📸</div>
+                        <div className={styles.fileText}>
+                          {formData.foto ? formData.foto.name : "Pilih foto"}
+                        </div>
+                        <div className={styles.fileSubtext}>
+                          Format: JPG, PNG, JPEG
+                        </div>
+                      </div>
+                    </div>
+                    {errors.foto && (
+                      <div className={styles.errorMessage}>
+                        ⚠️ {errors.foto}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
 
-          <Form.Group controlId="formdetail_permintaan">
-            <Form.Label>Detail Permintaan</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              placeholder="Masukkan detail permintaan"
-              name="detail_permintaan"
-              value={formData.detail_permintaan}
-              onChange={handleChange}
-              required
-            />
-            {errors.detail_permintaan && (
-              <div className="text-danger">{errors.detail_permintaan}</div>
-            )}
-          </Form.Group>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "2rem",
+                }}
+              >
+                <Button
+                  variant="primary"
+                  size="large"
+                  onClick={handleKirim}
+                  disabled={loading}
+                  loading={loading}
+                  icon={loading ? null : "📤"}
+                >
+                  {loading ? "Mengirim..." : "Kirim Pelaporan"}
+                </Button>
+              </div>
+            </Form>
+          </div>
+        </Container>
+      </div>
 
-          <Form.Group controlId="formLokasi">
-            <Form.Label>Lokasi</Form.Label>
-            <Form.Control
-              type="text"
-              name="lokasi"
-              placeholder="Masukkan lokasi"
-              value={formData.lokasi}
-              onChange={handleChange}
-              required
-            />
-            {errors.permintaan && (
-              <div className="text-danger">{errors.lokasi}</div>
-            )}
-          </Form.Group>
-
-          <Form.Group controlId="formsurat">
-            <Form.Label>File Surat Pengajuan (PDF, max 5MB)</Form.Label>
-            <Form.Control
-              type="file"
-              name="surat"
-              accept=".pdf"
-              onChange={handleChange}
-            />
-            {errors.surat && <div className="text-danger">{errors.surat}</div>}
-          </Form.Group>
-
-          <Form.Group controlId="formFoto">
-            <Form.Label>Foto (JPG, PNG, JPEG)</Form.Label>
-            <Form.Control
-              type="file"
-              name="foto"
-              accept=".jpg,.jpeg,.png"
-              onChange={handleChange}
-            />
-            {errors.foto && <div className="text-danger">{errors.foto}</div>}
-          </Form.Group>
-
-          <Button variant="primary" className="mt-3" onClick={handleKirim}>
-            Kirim
-          </Button>
-        </Form>
-      </Container>
-
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Konfirmasi Pengiriman</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Apakah data yang Anda masukkan sudah sesuai?</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Batal
-          </Button>
-          <Button variant="primary" onClick={handleSubmit} disabled={loading}>
-            {loading ? <Spinner animation="border" size="sm" /> : "Sesuai"}
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
+      {/* Modal Konfirmasi */}
       <Modal
-        show={showMessageModal}
-        onHide={() => setShowMessageModal(false)}
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        title="Konfirmasi Pengiriman"
+        titleIcon="📋"
+        type="confirmation"
+        showConfirmButton={true}
+        showCancelButton={true}
+        confirmText="Ya, Kirim Sekarang"
+        cancelText="Periksa Kembali"
+        onConfirm={handleSubmit}
+        onCancel={() => setShowModal(false)}
+        confirmIcon={loading ? null : "✅"}
+        loading={loading}
+        size="md"
         centered
       >
-        <Modal.Header closeButton>
-          <Modal.Title>
-            {message.type === "success" ? "Berhasil" : "Gagal"}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {message.type === "success" ? (
-            <p className="text-success">{message.text}</p>
-          ) : (
-            <p className="text-danger">{message.text}</p>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="secondary"
-            onClick={() => setShowMessageModal(false)}
-          >
-            Tutup
-          </Button>
-        </Modal.Footer>
+        <p>
+          Pastikan semua data yang Anda masukkan sudah benar dan lengkap.
+          Setelah dikirim, data tidak dapat diubah.
+        </p>
       </Modal>
+
+      {/* Notification */}
+      <Notification
+        message={notification.message}
+        type={notification.type}
+        show={notification.show}
+        onClose={() => setNotification((prev) => ({ ...prev, show: false }))}
+        duration={4000}
+        position="top-right"
+      />
     </>
   );
 };

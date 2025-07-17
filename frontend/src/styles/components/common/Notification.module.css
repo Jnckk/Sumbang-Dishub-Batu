@@ -1,0 +1,352 @@
+.notification {
+  position: fixed;
+  z-index: 1050;
+  min-width: 280px;
+  max-width: 350px;
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  font-family: "Roboto", sans-serif;
+  overflow: hidden;
+  transition: all 0.3s ease-out;
+}
+
+.notification.entering {
+  animation: slideInFromRight 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.notification.exiting {
+  animation: slideOutToRight 0.4s cubic-bezier(0.55, 0.09, 0.68, 0.53) forwards;
+}
+
+.notification.top-right {
+  top: 20px;
+  right: 20px;
+}
+
+.notification.top-left {
+  top: 20px;
+  left: 20px;
+}
+
+.notification.bottom-right {
+  bottom: 20px;
+  right: 20px;
+}
+
+.notification.bottom-left {
+  bottom: 20px;
+  left: 20px;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  position: relative;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.message {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.closeButton:hover {
+  transform: scale(1.1);
+}
+
+.progressBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  width: 100%;
+  transform: translateX(-100%);
+  animation: progress linear forwards;
+}
+
+.notification.success {
+  background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.9) 0%,
+    rgba(22, 163, 74, 0.9) 100%
+  );
+  color: white;
+}
+
+.notification.success .icon {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.notification.success .closeButton {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.notification.success .closeButton:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.notification.success .progressFill {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.notification.error {
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.9) 0%,
+    rgba(220, 38, 38, 0.9) 100%
+  );
+  color: white;
+}
+
+.notification.error .icon {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.notification.error .closeButton {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.notification.error .closeButton:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.notification.error .progressFill {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.notification.warning {
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.9) 0%,
+    rgba(217, 119, 6, 0.9) 100%
+  );
+  color: white;
+}
+
+.notification.warning .icon {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.notification.warning .closeButton {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.notification.warning .closeButton:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.notification.warning .progressFill {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.notification.info {
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.9) 0%,
+    rgba(37, 99, 235, 0.9) 100%
+  );
+  color: white;
+}
+
+.notification.info .icon {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.notification.info .closeButton {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.notification.info .closeButton:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.notification.info .progressFill {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(120%) translateY(-10px);
+    opacity: 0;
+    scale: 0.9;
+  }
+  to {
+    transform: translateX(0) translateY(0);
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes slideOutToRight {
+  from {
+    transform: translateX(0) translateY(0);
+    opacity: 1;
+    scale: 1;
+  }
+  to {
+    transform: translateX(120%) translateY(-10px);
+    opacity: 0;
+    scale: 0.9;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes progress {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .notification {
+    min-width: calc(100vw - 32px);
+    max-width: calc(100vw - 32px);
+    left: 16px !important;
+    right: 16px !important;
+  }
+
+  .notification.top-right,
+  .notification.top-left {
+    top: 16px;
+  }
+
+  .notification.bottom-right,
+  .notification.bottom-left {
+    bottom: 16px;
+  }
+
+  .content {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .icon {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+  }
+
+  .message {
+    font-size: 13px;
+    line-height: 1.3;
+  }
+
+  .closeButton {
+    width: 20px;
+    height: 20px;
+    font-size: 18px;
+  }
+
+  .progressBar {
+    height: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .notification {
+    min-width: calc(100vw - 24px);
+    max-width: calc(100vw - 24px);
+    left: 12px !important;
+    right: 12px !important;
+  }
+
+  .notification.top-right,
+  .notification.top-left {
+    top: 12px;
+  }
+
+  .notification.bottom-right,
+  .notification.bottom-left {
+    bottom: 12px;
+  }
+
+  .content {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .icon {
+    width: 18px;
+    height: 18px;
+    font-size: 11px;
+  }
+
+  .message {
+    font-size: 12px;
+    line-height: 1.2;
+  }
+
+  .closeButton {
+    width: 18px;
+    height: 18px;
+    font-size: 16px;
+  }
+
+  .progressBar {
+    height: 2px;
+  }
+}

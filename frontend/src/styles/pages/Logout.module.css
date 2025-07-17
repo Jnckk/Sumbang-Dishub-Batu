@@ -1,0 +1,189 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+.logoutContainer {
+  font-family: "Poppins", sans-serif;
+  min-height: 100vh;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.logoutCard {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.logoutCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.iconContainer {
+  margin-bottom: 2rem;
+}
+
+.logoutIcon {
+  font-size: 4rem;
+  animation: wave 2s ease-in-out infinite;
+}
+
+@keyframes wave {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-10deg);
+  }
+  75% {
+    transform: rotate(10deg);
+  }
+}
+
+.logoutTitle {
+  font-family: "Poppins", sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-text-color);
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.logoutDescription {
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  color: var(--secondary-text-color);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  opacity: 0.8;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.spinner {
+  width: 3rem;
+  height: 3rem;
+  color: var(--bs-primary);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingText {
+  font-family: "Poppins", sans-serif;
+  font-size: 0.9rem;
+  color: var(--secondary-text-color);
+  margin: 0;
+  opacity: 0.7;
+}
+
+.errorActions {
+  margin-top: 2rem;
+}
+
+.retryButton {
+  background: var(--bs-danger);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.retryButton:hover {
+  background: var(--bs-danger-dark);
+  transform: translateY(-2px);
+}
+
+.successMessage {
+  margin-top: 1.5rem;
+}
+
+.redirectText {
+  font-family: "Poppins", sans-serif;
+  font-size: 0.9rem;
+  color: var(--bs-success);
+  margin: 0;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .logoutContainer {
+    padding: 1rem 0;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+
+  .logoutCard {
+    padding: 2rem 1.5rem;
+    border-radius: 16px;
+  }
+
+  .logoutTitle {
+    font-size: 1.75rem;
+  }
+
+  .logoutDescription {
+    font-size: 0.9rem;
+  }
+
+  .logoutIcon {
+    font-size: 3rem;
+  }
+
+  .spinner {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .logoutCard {
+    padding: 1.5rem 1rem;
+    border-radius: 12px;
+  }
+
+  .logoutTitle {
+    font-size: 1.5rem;
+  }
+
+  .logoutIcon {
+    font-size: 2.5rem;
+  }
+
+  .iconContainer {
+    margin-bottom: 1.5rem;
+  }
+}

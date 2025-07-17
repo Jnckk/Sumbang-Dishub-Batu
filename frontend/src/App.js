@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -7,16 +7,16 @@ import {
 } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import Pelaporan from "./pages/Pelaporan";
-import Footer from "./components/footer";
 import Verifikasi from "./pages/Verifikasi";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Detail from "./pages/Detail";
 import ManageUser from "./pages/ManageUser";
 import Logout from "./pages/Logout";
-import MainNavbar from "./components/navigationbar";
+import Footer from "./components/layout/Footer";
+import MainNavbar from "./components/layout/Navbar";
 import fetchRole from "./utils/fetchRole";
-import styles from "./App.module.css";
+import "./styles/globals.css";
 
 const AppContent = () => {
   const location = useLocation();
@@ -40,9 +40,9 @@ const AppContent = () => {
   }, [location.pathname]);
 
   return (
-    <div className={styles.root}>
+    <div className="root">
       <MainNavbar role={role} />
-      <div className={styles.mainContent}>
+      <div className="mainContent">
         {isLoading ? (
           <p className="text-center mt-5">Loading...</p>
         ) : (

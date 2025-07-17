@@ -1,30 +1,21 @@
-import React from "react";
-import logo from "../images/Logo-dishub.webp";
+import logo from "../assets/images/Logo-dishub.webp";
+import styles from "../styles/pages/LandingPage.module.css";
 
 const LandingPage = () => {
-
   return (
-    <div>
-      <div
-        className="d-flex flex-column justify-content-start align-items-center"
-        style={{ minHeight: "80vh", paddingTop: "5vh" }}
-      >
-        <img
-          src={logo}
-          alt="Dishub Logo"
-          className="img-fluid"
-          style={{ maxWidth: "40%", height: "auto" }}
-        />
-        <p
-          style={{ fontSize: "2rem", fontWeight: "bold", textAlign: "center" }}
-        >
-          SUMBANG
-        </p>
-        <p
-          style={{ fontSize: "2rem", fontWeight: "bold", textAlign: "center" }}
-        >
-          Sarana Prasarana Untuk Masyarakat Batu Gampang
-        </p>
+    <div className="pageContainer">
+      <div className={styles.heroSection}>
+        <div className="contentWrapper">
+          <div className={styles.logoContainer}>
+            <img src={logo} alt="Dishub Logo" className={styles.logo} />
+          </div>
+          <div className={styles.titleContainer}>
+            <h1 className={styles.mainTitle}>SUMBANG</h1>
+            <p className={styles.subtitle}>
+              Sarana Prasarana Untuk Masyarakat Batu Gampang
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

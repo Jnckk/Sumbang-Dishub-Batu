@@ -1,15 +1,12 @@
-import React, { useState, useEffect } from "react";
-import {
-  Table,
-  Container,
-  Row,
-  Col,
-  Button,
-  Modal,
-  Spinner,
-} from "react-bootstrap";
+import { useState, useEffect, useCallback } from "react";
+import { Container } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import styles from "../css/pages/Detail.module.css";
+import Button from "../components/common/Button";
+import Status from "../components/common/Status";
+import Table from "../components/common/Table";
+import Spinner from "../components/common/Spinner";
+import Notification from "../components/common/Notification";
+import styles from "../styles/pages/Detail.module.css";
 
 const Detail = () => {
   const { id } = useParams();
@@ -17,10 +14,34 @@ const Detail = () => {
   const [isAuthenticated] = useState(true);
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
 
-  const fetchDetail = async () => {
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+    type: "info",
+  });
+
+  const showNotification = (message, type = "info") => {
+    setNotification({
+      show: true,
+      message,
+      type,
+    });
+  };
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const fetchDetail = useCallback(async () => {
     setPageLoading(true);
     try {
       const response = await fetch(
@@ -44,17 +65,19 @@ const Detail = () => {
         }
       } else {
         console.error("Gagal mengambil detail:", result.message);
+        showNotification("Gagal memuat detail laporan", "error");
       }
     } catch (err) {
       console.error("Error saat fetch detail:", err);
+      showNotification("Terjadi kesalahan saat memuat data", "error");
     } finally {
       setPageLoading(false);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
     fetchDetail();
-  }, [id]);
+  }, [fetchDetail]);
 
   const handleStatusChange = async (status_id) => {
     setLoading(true);
@@ -76,208 +99,250 @@ const Detail = () => {
       const result = await response.json();
 
       if (result.success) {
-        setModalMessage("Status berhasil diperbarui!");
+        showNotification("Status berhasil diperbarui!", "success");
         fetchDetail();
       } else {
-        setModalMessage("Gagal memperbarui status.");
+        showNotification("Gagal memperbarui status.", "error");
       }
     } catch (err) {
-      setModalMessage("Terjadi kesalahan saat memperbarui status.");
+      showNotification("Terjadi kesalahan saat memperbarui status.", "error");
     } finally {
       setLoading(false);
-      setShowModal(true);
     }
   };
 
   if (!isAuthenticated) {
     return (
-      <Container className="d-flex justify-content-center align-items-center vh-100">
-        <div className="text-center">
-          <h2>Silahkan Login Terlebih Dahulu</h2>
-        </div>
-      </Container>
+      <div className={styles.detailContainer}>
+        <Container className={styles.container}>
+          <div className={styles.errorState}>
+            <h2>Silahkan Login Terlebih Dahulu</h2>
+          </div>
+        </Container>
+      </div>
     );
   }
 
   if (pageLoading) {
     return (
-      <Container className="d-flex justify-content-center align-items-center vh-100">
-        <Spinner animation="border" variant="primary" />
-      </Container>
+      <div className={styles.detailContainer}>
+        <Container className={styles.container}>
+          <Spinner
+            size="large"
+            text="Memuat detail laporan..."
+            centered={true}
+          />
+        </Container>
+      </div>
     );
   }
 
+  const tableData = [
+    { label: "Nama", value: data.nama },
+    { label: "Alamat", value: data.alamat },
+    { label: "No HP", value: data.no_hp },
+    {
+      label: "WhatsApp",
+      value: (
+        <a
+          href={data.no_whatsapp}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.linkButton}
+        >
+          💬 Chat WhatsApp
+        </a>
+      ),
+    },
+    { label: "Permintaan", value: data.permintaan },
+    { label: "Detail Permintaan", value: data.detail_permintaan },
+    { label: "Lokasi", value: data.lokasi },
+    { label: "Status", value: <Status status={data.status} /> },
+    {
+      label: "Aksi Status",
+      value: (
+        <div className={styles.actionButtons}>
+          {data.status === "Verification" && (
+            <>
+              <Button
+                variant="success"
+                onClick={() => handleStatusChange(3)}
+                loading={loading}
+                icon="✅"
+                size="small"
+              >
+                Approve
+              </Button>
+              <Button
+                variant="danger"
+                onClick={() => handleStatusChange(2)}
+                loading={loading}
+                icon="❌"
+                size="small"
+              >
+                Reject
+              </Button>
+            </>
+          )}
+
+          {data.status === "Approved" && (
+            <>
+              <Button
+                variant="warning"
+                onClick={() => handleStatusChange(4)}
+                loading={loading}
+                icon="⏸️"
+                size="small"
+              >
+                Hold
+              </Button>
+              <Button
+                variant="primary"
+                onClick={() => handleStatusChange(5)}
+                loading={loading}
+                icon="⚙️"
+                size="small"
+              >
+                Process
+              </Button>
+            </>
+          )}
+
+          {(data.status === "On Hold" || data.status === "On Process") && (
+            <Button
+              variant="secondary"
+              onClick={() => handleStatusChange(6)}
+              loading={loading}
+              icon="✨"
+              size="small"
+            >
+              Done
+            </Button>
+          )}
+        </div>
+      ),
+    },
+  ];
+
+  const tableColumns = [
+    {
+      key: "label",
+      header: "Informasi",
+      width: "30%",
+      align: "left",
+      render: (item) => <strong>{item.label}</strong>,
+    },
+    {
+      key: "value",
+      header: "Detail",
+      width: "70%",
+      align: "left",
+      render: (item) => item.value,
+    },
+  ];
+
   return (
-    <>
-      <Container className="mt-5">
-        <h2 className="mb-4">Detail Pelaporan</h2>
-        <Row>
-          <Col md={8}>
-            <Table striped bordered hover className={styles.tableCustom}>
-              <tbody>
-                <tr>
-                  <td className={styles.colNama}>Nama</td>
-                  <td>{data.nama}</td>
-                </tr>
-                <tr>
-                  <td>Alamat</td>
-                  <td>{data.alamat}</td>
-                </tr>
-                <tr>
-                  <td>No HP</td>
-                  <td>{data.no_hp}</td>
-                </tr>
-                <tr>
-                  <td>No Whatsapp</td>
-                  <td>
-                    <a
-                      href={data.no_whatsapp}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Go To Whatsapp
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Permintaan</td>
-                  <td>{data.permintaan}</td>
-                </tr>
-                <tr>
-                  <td>Detail Permintaan</td>
-                  <td>{data.detail_permintaan}</td>
-                </tr>
-                <tr>
-                  <td>Lokasi</td>
-                  <td>{data.lokasi}</td>
-                </tr>
-                <tr>
-                  <td>Status</td>
-                  <td>{data.status}</td>
-                </tr>
-                <tr>
-                  <td>Surat</td>
-                  <td>
-                    {data.surat ? (
-                      <a
-                        href={data.surat}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary"
-                        style={{
-                          textDecoration: "underline",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        Lihat Surat
-                      </a>
-                    ) : (
-                      "Tidak ada surat"
-                    )}
-                  </td>
-                </tr>
-              </tbody>
-            </Table>
-          </Col>
-          <Col
-            md={4}
-            className="d-flex justify-content-center align-items-center"
-          >
+    <div className={styles.detailContainer}>
+      <Container className={styles.container}>
+        <div className={styles.headerSection}>
+          <h1 className={styles.pageTitle}>Detail Pelaporan</h1>
+          <p className={styles.pageDescription}>
+            Informasi lengkap dan status laporan masyarakat
+          </p>
+        </div>
+
+        <div className={styles.contentSection}>
+          <div className={styles.tableSection}>
+            <Table
+              columns={tableColumns}
+              data={tableData}
+              hover={true}
+              responsive={true}
+              noDataMessage="Tidak ada data laporan"
+              noDataIcon="📄"
+            />
+          </div>
+
+          <div className={styles.rightSection}>
+            {data.surat ? (
+              isMobile ? (
+                <div className={styles.mobileDocumentPreview}>
+                  <div className={styles.mobileDocumentIcon}>📄</div>
+                  <div className={styles.mobileDocumentInfo}>
+                    <p className={styles.mobileDocumentTitle}>Surat Tersedia</p>
+                    <p className={styles.mobileDocumentSubtitle}>
+                      Klik untuk membuka
+                    </p>
+                  </div>
+                  <a
+                    href={data.surat}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.mobileDocumentLink}
+                  >
+                    Buka Surat
+                  </a>
+                </div>
+              ) : (
+                <div className={styles.documentPreview}>
+                  <iframe
+                    src={data.surat}
+                    title="Preview Surat"
+                    className={styles.documentFrame}
+                  />
+                  <a
+                    href={data.surat}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.documentLink}
+                  >
+                    📄
+                  </a>
+                </div>
+              )
+            ) : (
+              <div className={styles.noDocument}>
+                <span className={styles.noDocumentIcon}>📄</span>
+                <span className={styles.noDocumentText}>Tidak ada surat</span>
+              </div>
+            )}
+
             {data.foto ? (
               <div className={styles.imageContainer}>
                 <img
                   src={data.foto}
-                  alt="Detail"
-                  style={{
-                    maxWidth: "100%",
-                    height: "auto",
-                    border: "5px solid #272a2f",
-                  }}
+                  alt="Dokumentasi Laporan"
+                  className={styles.reportImage}
                 />
+                <a
+                  href={data.foto}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.imageLink}
+                >
+                  📷
+                </a>
               </div>
             ) : (
-              <p>No image available</p>
+              <div className={styles.noImage}>
+                <span className={styles.noImageIcon}>📷</span>
+                <span className={styles.noImageText}>Tidak ada gambar</span>
+              </div>
             )}
-          </Col>
-        </Row>
-
-        <Row className="mt-0">
-          <Col className="d-flex gap-2 justify-content-start flex-wrap">
-            {data.status === "Verification" && (
-              <>
-                <Button
-                  variant="success"
-                  onClick={() => handleStatusChange(3)}
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <Spinner size="sm" animation="border" />
-                  ) : (
-                    "Approve"
-                  )}
-                </Button>
-                <Button
-                  variant="danger"
-                  onClick={() => handleStatusChange(2)}
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <Spinner size="sm" animation="border" />
-                  ) : (
-                    "Reject"
-                  )}
-                </Button>
-              </>
-            )}
-
-            {data.status === "Approved" && (
-              <>
-                <Button
-                  variant="warning"
-                  onClick={() => handleStatusChange(4)}
-                  disabled={loading}
-                >
-                  {loading ? <Spinner size="sm" animation="border" /> : "Hold"}
-                </Button>
-                <Button
-                  variant="primary"
-                  onClick={() => handleStatusChange(5)}
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <Spinner size="sm" animation="border" />
-                  ) : (
-                    "Process"
-                  )}
-                </Button>
-              </>
-            )}
-
-            {(data.status === "On Hold" || data.status === "On Process") && (
-              <Button
-                variant="secondary"
-                onClick={() => handleStatusChange(6)}
-                disabled={loading}
-              >
-                {loading ? <Spinner size="sm" animation="border" /> : "Done"}
-              </Button>
-            )}
-          </Col>
-        </Row>
+          </div>
+        </div>
       </Container>
 
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Notifikasi</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{modalMessage}</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Tutup
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
+      {/* Notification */}
+      <Notification
+        message={notification.message}
+        type={notification.type}
+        show={notification.show}
+        onClose={() => setNotification((prev) => ({ ...prev, show: false }))}
+        duration={4000}
+        position="top-right"
+      />
+    </div>
   );
 };
 
