@@ -4,20 +4,18 @@ import Status from "../components/common/Status";
 import Table from "../components/common/Table";
 import Spinner from "../components/common/Spinner";
 import styles from "../styles/pages/Verifikasi.module.css";
+import { getVerifikasiStatus } from "../utils/api";
 
 const Verifikasi = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
-  const API_URL = process.env.REACT_APP_API_URL + "/public/public-status";
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(API_URL);
-        const result = await response.json();
-        if (result.success) {
+        const result = await getVerifikasiStatus();
+        if (result && result.success) {
           setData(result.data);
         }
       } catch (error) {
@@ -26,9 +24,8 @@ const Verifikasi = () => {
         setLoading(false);
       }
     };
-
     fetchData();
-  }, [API_URL]);
+  }, []);
 
   const filteredData = data.filter((item) =>
     Object.values(item).some((value) =>

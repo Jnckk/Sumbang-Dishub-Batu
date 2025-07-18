@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import styles from "../../styles/components/layout/navbar.module.css";
+import { getRole } from "../../utils/api";
 
 const MainNavbar = () => {
   const location = useLocation();
@@ -9,31 +10,12 @@ const MainNavbar = () => {
   useEffect(() => {
     const fetchRole = async () => {
       try {
-        const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/users/role`,
-          {
-            method: "GET",
-            credentials: "include",
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          console.error("Gagal mendapatkan role:", response.status);
-          return;
-        }
-
-        const data = await response.json();
-        if (data.success) {
-          setRole(data.role);
-        }
+        const roleData = await getRole();
+        setRole(roleData);
       } catch (err) {
         console.error("Error saat fetch role:", err);
       }
     };
-
     if (location.pathname === "/dashboard") {
       fetchRole();
     }

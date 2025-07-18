@@ -7,6 +7,7 @@ import Table from "../components/common/Table";
 import Spinner from "../components/common/Spinner";
 import Notification from "../components/common/Notification";
 import styles from "../styles/pages/Detail.module.css";
+import { getDetail, updateStatus } from "../utils/api";
 
 const Detail = () => {
   const { id } = useParams();
@@ -44,22 +45,9 @@ const Detail = () => {
   const fetchDetail = useCallback(async () => {
     setPageLoading(true);
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/users/detail/${id}`,
-        {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-
-      const result = await response.json();
-
+      const result = await getDetail(id);
       if (result.success) {
         setData(result.data);
-
         if (result.newAccessToken) {
           localStorage.setItem("accessToken", result.newAccessToken);
         }
@@ -81,23 +69,8 @@ const Detail = () => {
 
   const handleStatusChange = async (status_id) => {
     setLoading(true);
-
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/users/edit-status/${id}`,
-        {
-          method: "PATCH",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-          body: JSON.stringify({ status_id }),
-        }
-      );
-
-      const result = await response.json();
-
+      const result = await updateStatus(id, status_id);
       if (result.success) {
         showNotification("Status berhasil diperbarui!", "success");
         fetchDetail();

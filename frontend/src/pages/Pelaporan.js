@@ -4,6 +4,7 @@ import Button from "../components/common/Button";
 import Modal from "../components/common/Modal";
 import Notification from "../components/common/Notification";
 import styles from "../styles/pages/Pelaporan.module.css";
+import { sendPelaporan } from "../utils/api";
 
 const Pelaporan = () => {
   const [formData, setFormData] = useState({
@@ -146,30 +147,10 @@ const Pelaporan = () => {
       setShowModal(false);
       return;
     }
-
     setLoading(true);
-
-    let permintaanValue = formData.permintaan === "Pengadaan" ? 1 : 2;
-
-    const submitData = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      if (value) submitData.append(key, value);
-    });
-
-    submitData.set("permintaan", permintaanValue);
-
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/public/add-request`,
-        {
-          method: "POST",
-          body: submitData,
-        }
-      );
-
-      const result = await response.json();
-
-      if (response.ok) {
+      const { ok, result } = await sendPelaporan(formData);
+      if (ok) {
         showNotification(
           "Pelaporan berhasil dikirim! Terima kasih atas laporan Anda.",
           "success"

@@ -5,6 +5,7 @@ import Table from "../components/common/Table";
 import Button from "../components/common/Button";
 import Spinner from "../components/common/Spinner";
 import styles from "../styles/pages/Dashboard.module.css";
+import { getUsersDashboard } from "../utils/api";
 
 const Dashboard = () => {
   const [dataUsers, setDataUsers] = useState([]);
@@ -14,22 +15,9 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchUsersDashboard = async () => {
       try {
-        const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/users/users-dashboard`,
-          {
-            method: "GET",
-            credentials: "include",
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            },
-          }
-        );
-
-        const data = await response.json();
-
+        const data = await getUsersDashboard();
         if (data.success) {
           setDataUsers(data.data);
-
           if (data.newAccessToken) {
             localStorage.setItem("accessToken", data.newAccessToken);
           }
@@ -42,7 +30,6 @@ const Dashboard = () => {
         setIsLoading(false);
       }
     };
-
     fetchUsersDashboard();
   }, [navigate]);
 

@@ -6,6 +6,7 @@ import Table from "../components/common/Table";
 import Spinner from "../components/common/Spinner";
 import Notification from "../components/common/Notification";
 import styles from "../styles/pages/ManageUser.module.css";
+import { getUsers, addUser, updateUser, deleteUser } from "../utils/api";
 
 const ManageUser = () => {
   const [users, setUsers] = useState([]);
@@ -39,19 +40,8 @@ const ManageUser = () => {
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/auth/list-users`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-
-      const result = await response.json();
-
-      if (response.ok) {
+      const { ok, result } = await getUsers();
+      if (ok) {
         setUsers(result.users);
       } else {
         throw new Error(result.message || "Gagal mengambil data pengguna.");
@@ -73,28 +63,14 @@ const ManageUser = () => {
       showNotification("Username dan password tidak boleh kosong!", "warning");
       return;
     }
-
     setAdding(true);
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/auth/add-users`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-          body: JSON.stringify({
-            username: newUsername,
-            password: newPassword,
-            role_id: parseInt(newRole, 10),
-          }),
-        }
+      const { ok, result } = await addUser(
+        newUsername,
+        newPassword,
+        parseInt(newRole, 10)
       );
-
-      const result = await response.json();
-
-      if (response.ok) {
+      if (ok) {
         showNotification("User berhasil ditambahkan!", "success");
         fetchUsers();
         setShowAddModal(false);
@@ -114,7 +90,6 @@ const ManageUser = () => {
 
   const handleEditUser = async () => {
     if (!selectedUser) return;
-
     if (!newUsername && !newPassword) {
       showNotification(
         "Harap isi setidaknya username atau password baru!",
@@ -122,27 +97,14 @@ const ManageUser = () => {
       );
       return;
     }
-
     setUpdating(true);
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/auth/update/${selectedUser.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-          body: JSON.stringify({
-            newUsername: newUsername || undefined,
-            newPassword: newPassword || undefined,
-          }),
-        }
+      const { ok, result } = await updateUser(
+        selectedUser.id,
+        newUsername || undefined,
+        newPassword || undefined
       );
-
-      const result = await response.json();
-
-      if (response.ok) {
+      if (ok) {
         showNotification("User berhasil diperbarui!", "success");
         fetchUsers();
         setShowEditModal(false);
@@ -161,22 +123,10 @@ const ManageUser = () => {
 
   const handleDeleteUser = async () => {
     if (!selectedUser) return;
-
     setDeleting(true);
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/auth/delete-user/${selectedUser.id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-
-      const result = await response.json();
-
-      if (response.ok) {
+      const { ok, result } = await deleteUser(selectedUser.id);
+      if (ok) {
         showNotification("User berhasil dihapus!", "success");
         setUsers(users.filter((user) => user.id !== selectedUser.id));
         setShowDeleteModal(false);

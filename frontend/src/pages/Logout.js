@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Container } from "react-bootstrap";
 import Spinner from "../components/common/Spinner";
 import styles from "../styles/pages/Logout.module.css";
+import { logoutUser } from "../utils/api";
 
 const Logout = () => {
   const [message, setMessage] = React.useState(null);
@@ -10,32 +11,20 @@ const Logout = () => {
   const [countdown, setCountdown] = React.useState(3);
 
   useEffect(() => {
-    const logoutUser = async () => {
+    const doLogout = async () => {
       try {
-        const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/users/logout`,
-          {
-            method: "POST",
-            credentials: "include",
-          }
-        );
-
-        const result = await response.json();
-
-        if (response.ok) {
+        const { ok, result } = await logoutUser();
+        if (ok) {
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
-
           setMessage(
             "Logout berhasil! Anda akan diarahkan ke halaman utama..."
           );
           setIsSuccess(true);
           setIsLoading(false);
-
           const redirectTimer = setTimeout(() => {
             window.location.href = "/";
           }, 3000);
-
           const countdownTimer = setInterval(() => {
             setCountdown((prev) => {
               if (prev <= 1) {
@@ -45,7 +34,6 @@ const Logout = () => {
               return prev - 1;
             });
           }, 1000);
-
           return () => {
             clearTimeout(redirectTimer);
             clearInterval(countdownTimer);
@@ -59,8 +47,7 @@ const Logout = () => {
         setIsLoading(false);
       }
     };
-
-    logoutUser();
+    doLogout();
   }, []);
 
   return (

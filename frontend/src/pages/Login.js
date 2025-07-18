@@ -3,6 +3,7 @@ import { Form, Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/common/Button";
 import styles from "../styles/pages/Login.module.css";
+import { loginUser } from "../utils/api";
 
 const Login = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
@@ -18,26 +19,13 @@ const Login = () => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
-
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/users/login`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        }
-      );
-
-      const data = await response.json();
-
+      const data = await loginUser(formData);
       if (!data.success) {
         setError(data.message);
         setIsLoading(false);
         return;
       }
-
       navigate("/dashboard");
     } catch (err) {
       setError("Gagal melakukan login.");
