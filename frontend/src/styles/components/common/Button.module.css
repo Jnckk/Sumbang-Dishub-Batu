@@ -1,7 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
 .button {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   border: none;
   border-radius: 12px;
   font-weight: 600;
@@ -136,8 +134,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive */
@@ -146,17 +148,17 @@
     padding: 0.875rem 1.5rem;
     font-size: 0.95rem;
   }
-  
+
   .small {
     padding: 0.5rem 1rem;
     font-size: 0.8rem;
   }
-  
+
   .large {
     padding: 1rem 2rem;
     font-size: 1rem;
   }
-  
+
   .xlarge {
     padding: 1.125rem 2.5rem;
     font-size: 1.125rem;
